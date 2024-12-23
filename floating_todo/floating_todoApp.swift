@@ -10,8 +10,9 @@ import SwiftUI
 @main
 struct floating_todoApp: App {
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        WindowGroup("Task Manager") {
+            TaskManagerView()
+                .environmentObject(TaskManager.shared)
         }
     }
 }
