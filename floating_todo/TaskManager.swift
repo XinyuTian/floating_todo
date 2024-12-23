@@ -71,7 +71,12 @@ class TaskManager: ObservableObject {
                 .environmentObject(self)
             window.contentView = NSHostingView(rootView: floatingView)
             
-            window.center()
+            // Position at top-left corner
+            if let screen = NSScreen.main {
+                let screenFrame = screen.visibleFrame
+                window.setFrameTopLeftPoint(NSPoint(x: screenFrame.minX, y: screenFrame.maxY))
+            }
+            
             window.makeKeyAndOrderFront(nil)
             
             self.floatingWindow = window

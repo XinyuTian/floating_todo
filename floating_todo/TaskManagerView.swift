@@ -10,6 +10,11 @@ struct TaskManagerView: View {
             HStack {
                 TextField("New task...", text: $newTaskTitle)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .onSubmit {
+                        if !newTaskTitle.isEmpty {
+                            addTask()
+                        }
+                    }
                 
                 Button(action: addTask) {
                     Image(systemName: "plus.circle.fill")
