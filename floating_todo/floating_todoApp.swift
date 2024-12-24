@@ -9,10 +9,12 @@ import SwiftUI
 
 @main
 struct floating_todoApp: App {
+    @StateObject private var taskManager = TaskManager.shared
+    
     var body: some Scene {
-        WindowGroup("Task Manager") {
-            TaskManagerView()
-                .environmentObject(TaskManager.shared)
+        WindowGroup {
+            Color.clear
+                .frame(width: 0, height: 0)
         }
     }
 }
