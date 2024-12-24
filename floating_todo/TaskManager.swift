@@ -12,7 +12,7 @@ class TaskManager: ObservableObject {
     private func createFloatingWindow() {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 200, height: 40),
-            styleMask: [.borderless],
+            styleMask: [.borderless, .titled], 
             backing: .buffered,
             defer: false
         )
@@ -20,6 +20,10 @@ class TaskManager: ObservableObject {
         window.backgroundColor = .clear
         window.isMovableByWindowBackground = true
         window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
+        window.isOpaque = false
+        window.acceptsMouseMovedEvents = true
         
         let floatingView = FloatingDisplayView()
         window.contentView = NSHostingView(rootView: floatingView)
