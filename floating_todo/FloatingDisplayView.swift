@@ -42,18 +42,40 @@ struct FloatingDisplayView: View {
 struct TaskItemView: View {
     @Binding var text: String
     @FocusState private var isFocused: Bool
+    @State private var isEditing: Bool = false
     
     var body: some View {
-        TextField("task name", text: $text)
-            .font(.system(size: 16, weight: .medium))
-            .foregroundColor(.white)
-            .textFieldStyle(.plain)
-            .focused($isFocused)
-            .frame(maxWidth: .infinity)
-            .frame(height: 40)
-            .padding(.horizontal, 10)
-            .background(Color.blue.opacity(0.8))
-            .cornerRadius(4)
-            .padding(.horizontal, 10)
+        ZStack {
+            // Text display
+            Text(text.isEmpty ? "task name" : text)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 10)
+                .opacity(isEditing ? 0 : 1)
+            
+            // Text field for editing
+            if isEditing {
+                TextField("", text: $text)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+                    .textFieldStyle(.plain)
+                    .focused($isFocused)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 10)
+                    .onSubmit {
+                        isEditing = false
+                        isFocused = false
+                    }
+            }
+        }
+        .frame(height: 40)
+        .background(Color.blue.opacity(isEditing ? 1.0 : 0.8))
+        .cornerRadius(4)
+        .padding(.horizontal, 10)
+        .onTapGesture(count: 2) {
+            isEditing = true
+            isFocused = true
+        }
     }
 }
