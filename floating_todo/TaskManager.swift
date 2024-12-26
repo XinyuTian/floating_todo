@@ -5,14 +5,35 @@ class TaskManager: ObservableObject {
     static let shared = TaskManager()
     var floatingWindow: NSWindow?
     @Published var tasks: [String] = [""]
+    @Published var highlightedIndex: Int? = nil
+    @Published var isEditing: Bool = false
     
     private init() {
         createFloatingWindow()
     }
     
     func addTask() {
+        if isEditing {
+            NSSound.beep()
+            return
+        }
         tasks.append("")
         updateWindowHeight()
+    }
+    
+    func toggleHighlight(at index: Int) {
+        if isEditing {
+            NSSound.beep()
+            return
+        }
+        
+        if highlightedIndex == index {
+            // If clicking the currently highlighted task, unhighlight it
+            highlightedIndex = nil
+        } else {
+            // Highlight the new task (this automatically unhighlights the previous one)
+            highlightedIndex = index
+        }
     }
     
     private func updateWindowHeight() {

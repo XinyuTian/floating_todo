@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct FloatingDisplayView: View {
     @EnvironmentObject var taskManager: TaskManager
@@ -7,10 +8,14 @@ struct FloatingDisplayView: View {
     var body: some View {
         VStack(spacing: 0) {
             ForEach(taskManager.tasks.indices, id: \.self) { index in
-                TaskItemView(text: Binding(
-                    get: { taskManager.tasks[index] },
-                    set: { taskManager.tasks[index] = $0 }
-                ))
+                TaskItemView(
+                    text: Binding(
+                        get: { taskManager.tasks[index] },
+                        set: { taskManager.tasks[index] = $0 }
+                    ),
+                    isHighlighted: taskManager.highlightedIndex == index,
+                    onTap: { taskManager.toggleHighlight(at: index) }
+                )
             }
         }
         .padding(.vertical, 10)
@@ -40,9 +45,12 @@ struct FloatingDisplayView: View {
 }
 
 struct TaskItemView: View {
+    @EnvironmentObject var taskManager: TaskManager
     @Binding var text: String
     @FocusState private var isFocused: Bool
     @State private var isEditing: Bool = false
+    let isHighlighted: Bool
+    let onTap: () -> Void
     
     var body: some View {
         ZStack {
@@ -64,18 +72,47 @@ struct TaskItemView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 10)
                     .onSubmit {
-                        isEditing = false
-                        isFocused = false
+                        endEditing()
                     }
             }
         }
         .frame(height: 40)
-        .background(Color.blue.opacity(isEditing ? 1.0 : 0.8))
+        .background(backgroundColor)
         .cornerRadius(4)
         .padding(.horizontal, 10)
         .onTapGesture(count: 2) {
-            isEditing = true
-            isFocused = true
+            if taskManager.isEditing {
+                NSSound.beep()
+                return
+            }
+            startEditing()
+        }
+        .onTapGesture {
+            if !isEditing {
+                onTap()
+            }
+        }
+    }
+    
+    private func startEditing() {
+        isEditing = true
+        isFocused = true
+        taskManager.isEditing = true
+    }
+    
+    private func endEditing() {
+        isEditing = false
+        isFocused = false
+        taskManager.isEditing = false
+    }
+    
+    private var backgroundColor: Color {
+        if isEditing {
+            return Color.blue
+        } else if isHighlighted {
+            return Color.blue.opacity(0.9)
+        } else {
+            return Color.blue.opacity(0.4)
         }
     }
 }
