@@ -7,6 +7,7 @@ class TaskManager: ObservableObject {
     @Published var tasks: [String] = [""]
     @Published var highlightedIndex: Int? = nil
     @Published var isEditing: Bool = false
+    @Published var editingIndex: Int? = nil
     
     private init() {
         createFloatingWindow()
@@ -34,6 +35,29 @@ class TaskManager: ObservableObject {
             // Highlight the new task (this automatically unhighlights the previous one)
             highlightedIndex = index
         }
+    }
+    
+    func startEditing(at index: Int) {
+        // If another task is currently being edited, end its editing
+        if isEditing {
+            NSSound.beep()
+            return
+        }
+        
+        // Start editing the new task
+        editingIndex = index
+        isEditing = true
+    }
+    func endEditing() {
+        // Remove empty tasks when editing ends
+        if let index = editingIndex, tasks[index].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            tasks.remove(at: index)
+            updateWindowHeight()
+        }
+        
+        editingIndex = nil
+        isEditing = false
+        highlightedIndex = nil
     }
     
     private func updateWindowHeight() {

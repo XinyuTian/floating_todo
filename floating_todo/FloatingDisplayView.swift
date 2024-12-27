@@ -97,13 +97,13 @@ struct TaskItemView: View {
     private func startEditing() {
         isEditing = true
         isFocused = true
-        taskManager.isEditing = true
+        taskManager.startEditing(at: taskManager.tasks.firstIndex(of: text) ?? 0)
     }
     
     private func endEditing() {
         isEditing = false
         isFocused = false
-        taskManager.isEditing = false
+        taskManager.endEditing()
     }
     
     private var backgroundColor: Color {
