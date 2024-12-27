@@ -49,11 +49,9 @@ class TaskManager: ObservableObject {
         isEditing = true
     }
     func endEditing() {
-        // Remove empty tasks when editing ends
-        if let index = editingIndex, tasks[index].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            tasks.remove(at: index)
-            updateWindowHeight()
-        }
+        
+        // Post a notification to ensure all TaskItemViews update their editing state
+        NotificationCenter.default.post(name: NSNotification.Name("EndEditingAll"), object: nil)
         
         editingIndex = nil
         isEditing = false

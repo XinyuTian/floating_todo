@@ -82,7 +82,10 @@ struct TaskItemView: View {
         .padding(.horizontal, 10)
         .onTapGesture(count: 2) {
             if taskManager.isEditing {
-                NSSound.beep()
+                taskManager.endEditing()  // End the current editing session
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    startEditing()  // Start editing this task after a brief delay
+                }
                 return
             }
             startEditing()
@@ -91,6 +94,9 @@ struct TaskItemView: View {
             if !isEditing {
                 onTap()
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("EndEditingAll"))) { _ in
+            isEditing = false
         }
     }
     
