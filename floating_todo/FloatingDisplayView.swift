@@ -6,7 +6,7 @@ struct FloatingDisplayView: View {
     @State private var hovering = false
     
     var body: some View {
-        VStack(spacing: 0) {
+        LazyVStack(spacing: 0) {
             ForEach(taskManager.tasks.indices, id: \.self) { index in
                 TaskItemView(
                     text: Binding(
@@ -37,8 +37,10 @@ struct FloatingDisplayView: View {
             .transition(.opacity)
         }
         .onHover { isHovering in
-            withAnimation {
-                hovering = isHovering
+            if hovering != isHovering {
+                withAnimation {
+                    hovering = isHovering
+                }
             }
         }
     }
