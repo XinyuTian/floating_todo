@@ -12,9 +12,7 @@ struct FloatingDisplayView: View {
                     text: Binding(
                         get: { taskManager.tasks[index] },
                         set: { taskManager.tasks[index] = $0 }
-                    ),
-                    isHighlighted: taskManager.highlightedIndex == index,
-                    onTap: { taskManager.toggleHighlight(at: index) }
+                    )
                 )
             }
         }
@@ -51,8 +49,6 @@ struct TaskItemView: View {
     @Binding var text: String
     @FocusState private var isFocused: Bool
     @State private var isEditing: Bool = false
-    let isHighlighted: Bool
-    let onTap: () -> Void
     
     var body: some View {
         ZStack {
@@ -92,11 +88,6 @@ struct TaskItemView: View {
             }
             startEditing()
         }
-        .onTapGesture {
-            if !isEditing {
-                onTap()
-            }
-        }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("EndEditingAll"))) { _ in
             isEditing = false
         }
@@ -117,10 +108,8 @@ struct TaskItemView: View {
     private var backgroundColor: Color {
         if isEditing {
             return Color.blue
-        } else if isHighlighted {
-            return Color.blue.opacity(0.9)
         } else {
-            return Color.blue.opacity(0.4)
+            return Color.blue.opacity(0.7)
         }
     }
 }
