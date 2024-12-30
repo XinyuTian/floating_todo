@@ -7,11 +7,11 @@ class TaskManager: ObservableObject {
     @Published var tasks: [String] = [""]
     @Published var isEditing: Bool = false
     @Published var editingIndex: Int? = nil
+    @Published var activeTaskIndex: Int? = nil
     
     private init() {
         createFloatingWindow()
     }
-    
     func addTask() {
         if isEditing {
             NSSound.beep()
@@ -20,7 +20,6 @@ class TaskManager: ObservableObject {
         tasks.append("")
         updateWindowHeight()
     }
-    
     func startEditing(at index: Int) {
         // If another task is currently being edited, end its editing
         if isEditing {
@@ -30,6 +29,7 @@ class TaskManager: ObservableObject {
         
         // Start editing the new task
         editingIndex = index
+        activeTaskIndex = index
         isEditing = true
     }
     func endEditing() {

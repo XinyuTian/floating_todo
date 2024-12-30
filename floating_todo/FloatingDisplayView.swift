@@ -12,7 +12,8 @@ struct FloatingDisplayView: View {
                     text: Binding(
                         get: { taskManager.tasks[index] },
                         set: { taskManager.tasks[index] = $0 }
-                    )
+                    ),
+                    index: index
                 )
             }
         }
@@ -47,6 +48,7 @@ struct FloatingDisplayView: View {
 struct TaskItemView: View {
     @EnvironmentObject var taskManager: TaskManager
     @Binding var text: String
+    let index: Int // Add index property
     @FocusState private var isFocused: Bool
     @State private var isEditing: Bool = false
     
@@ -96,20 +98,23 @@ struct TaskItemView: View {
     private func startEditing() {
         isEditing = true
         isFocused = true
-        taskManager.startEditing(at: taskManager.tasks.firstIndex(of: text) ?? 0)
+        taskManager.startEditing(at: index)
     }
     
     private func endEditing() {
         isEditing = false
         isFocused = false
         taskManager.endEditing()
+        print("Ending editing. Active task index:", taskManager.activeTaskIndex ?? "none")
     }
     
     private var backgroundColor: Color {
         if isEditing {
-            return Color.blue
+            return Color.gray
+        } else if taskManager.activeTaskIndex == index && text != "" {
+            return Color.purple
         } else {
-            return Color.blue.opacity(0.7)
+            return Color.blue.opacity(0.6)
         }
     }
 }
