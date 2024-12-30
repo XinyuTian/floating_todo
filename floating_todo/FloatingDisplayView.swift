@@ -111,7 +111,7 @@ struct TaskItemView: View {
     private var backgroundColor: Color {
         if isEditing {
             return Color.gray
-        } else if taskManager.activeTaskIndex == index && text != "" {
+        } else if taskManager.activeTaskIndex == index {
             return Color.purple
         } else {
             return Color.blue.opacity(0.6)

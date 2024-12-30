@@ -11,6 +11,7 @@ class TaskManager: ObservableObject {
     
     private init() {
         createFloatingWindow()
+        setupKeyMonitoring()
     }
     func addTask() {
         if isEditing {
@@ -41,6 +42,36 @@ class TaskManager: ObservableObject {
         isEditing = false
     }
     
+    private func setupKeyMonitoring() {
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            switch event.keyCode {
+            case 126: // Up Arrow
+                self.moveFocus(up: true)
+                return nil // Prevent further propagation
+            case 125: // Down Arrow
+                self.moveFocus(up: false)
+                return nil // Prevent further propagation
+            default:
+                return event // Allow other events to propagate
+            }
+        }
+    }
+
+    func moveFocus(up: Bool) {
+        guard !tasks.isEmpty else { return }
+
+        if let currentIndex = activeTaskIndex {
+            if up {
+                activeTaskIndex = max(0, currentIndex - 1)
+            } else {
+                activeTaskIndex = min(tasks.count - 1, currentIndex + 1)
+            }
+        } else {
+            // If no task is active, focus the first or last task based on direction
+            activeTaskIndex = up ? tasks.count - 1 : 0
+        }
+    }
+
     private func updateWindowHeight() {
         let taskHeight: CGFloat = 40
         let verticalMargin: CGFloat = 20 // 10 points on top and bottom
