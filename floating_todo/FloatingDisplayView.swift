@@ -10,8 +10,8 @@ struct FloatingDisplayView: View {
             ForEach(taskManager.tasks.indices, id: \.self) { index in
                 TaskItemView(
                     text: Binding(
-                        get: { taskManager.tasks[index] },
-                        set: { taskManager.tasks[index] = $0 }
+                        get: { taskManager.tasks[index].text },
+                        set: { taskManager.tasks[index].text = $0 }
                     ),
                     index: index
                 )
@@ -48,9 +48,9 @@ struct FloatingDisplayView: View {
 struct TaskItemView: View {
     @EnvironmentObject var taskManager: TaskManager
     @Binding var text: String
-    let index: Int // Add index property
     @FocusState private var isFocused: Bool
     @State private var isEditing: Bool = false
+    let index: Int
     
     var body: some View {
         ZStack {

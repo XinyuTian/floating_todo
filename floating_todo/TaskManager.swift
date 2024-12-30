@@ -4,7 +4,7 @@ import AppKit
 class TaskManager: ObservableObject {
     static let shared = TaskManager()
     var floatingWindow: NSWindow?
-    @Published var tasks: [String] = [""]
+    @Published var tasks: [Task] = [Task(text: "")]
     @Published var isEditing: Bool = false
     @Published var editingIndex: Int? = nil
     @Published var activeTaskIndex: Int? = nil
@@ -18,7 +18,7 @@ class TaskManager: ObservableObject {
             NSSound.beep()
             return
         }
-        tasks.append("")
+        tasks.append(Task(text: ""))
         updateWindowHeight()
     }
     func startEditing(at index: Int) {
@@ -107,5 +107,15 @@ class TaskManager: ObservableObject {
         
         window.makeKeyAndOrderFront(nil)
         self.floatingWindow = window
+    }
+}
+
+class Task: Identifiable {
+    let id = UUID()
+    var text: String
+    // var onEnterPress: () -> Void
+
+    init(text: String) {
+        self.text = text
     }
 }
