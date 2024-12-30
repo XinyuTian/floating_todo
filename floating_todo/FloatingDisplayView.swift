@@ -112,7 +112,7 @@ struct TaskItemView: View {
         if isEditing {
             return Color.gray
         } else if taskManager.activeTaskIndex == index {
-            return Color.purple
+            return Color.blue
         } else {
             return Color.blue.opacity(0.6)
         }
