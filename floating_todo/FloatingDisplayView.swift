@@ -4,7 +4,8 @@ import AppKit
 struct FloatingDisplayView: View {
     @EnvironmentObject var taskManager: TaskManager
     @State private var hovering = false
-    
+    @State private var keyPressed = ""
+
     var body: some View {
         LazyVStack(spacing: 0) {
             ForEach(taskManager.tasks.indices, id: \.self) { index in
@@ -13,7 +14,8 @@ struct FloatingDisplayView: View {
                         get: { taskManager.tasks[index].text },
                         set: { taskManager.tasks[index].text = $0 }
                     ),
-                    index: index
+                    index: index,
+                    keyPressed: taskManager.activeTaskIndex == index ? taskManager.keyPressed : ""
                 )
             }
         }
@@ -51,6 +53,7 @@ struct TaskItemView: View {
     @FocusState private var isFocused: Bool
     @State private var isEditing: Bool = false
     let index: Int
+    let keyPressed: String
     
     var body: some View {
         ZStack {
@@ -71,9 +74,6 @@ struct TaskItemView: View {
                     .focused($isFocused)
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, 10)
-                    .onSubmit {
-                        endEditing()
-                    }
             }
         }
         .frame(height: 40)
@@ -93,12 +93,31 @@ struct TaskItemView: View {
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("EndEditingAll"))) { _ in
             isEditing = false
         }
+        .onChange(of: keyPressed) {
+            if keyPressed == "enter" {
+                if isEditing {
+                    print("Ending editing + . Active task index:", index)
+                    endEditing()
+                } else {
+                    print("Starting editing + . Active task index:", index)
+                    if taskManager.isEditing {
+                        taskManager.endEditing()  // End the current editing session
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            startEditing()  // Start editing this task after a brief delay
+                        }
+                        return
+                    }
+                    startEditing()
+                }
+            }
+        }
     }
     
     private func startEditing() {
         isEditing = true
         isFocused = true
         taskManager.startEditing(at: index)
+        print("Starting editing. Active task index:", index)
     }
     
     private func endEditing() {

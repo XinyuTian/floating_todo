@@ -8,6 +8,7 @@ class TaskManager: ObservableObject {
     @Published var isEditing: Bool = false
     @Published var editingIndex: Int? = nil
     @Published var activeTaskIndex: Int? = nil
+    @Published var keyPressed: String = ""
     
     private init() {
         createFloatingWindow()
@@ -51,6 +52,12 @@ class TaskManager: ObservableObject {
             case 125: // Down Arrow
                 self.moveFocus(up: false)
                 return nil // Prevent further propagation
+            case 36:
+                self.keyPressed = "enter"
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.keyPressed = ""
+                }
+                return nil
             default:
                 return event // Allow other events to propagate
             }
