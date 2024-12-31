@@ -81,14 +81,7 @@ struct TaskItemView: View {
         .cornerRadius(4)
         .padding(.horizontal, 10)
         .onTapGesture(count: 2) {
-            if taskManager.isEditing {
-                taskManager.endEditing()  // End the current editing session
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    startEditing()  // Start editing this task after a brief delay
-                }
-                return
-            }
-            startEditing()
+            startEditingGenral()
         }
         .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("EndEditingAll"))) { _ in
             isEditing = false
@@ -96,21 +89,24 @@ struct TaskItemView: View {
         .onChange(of: keyPressed) {
             if keyPressed == "enter" {
                 if isEditing {
-                    print("Ending editing + . Active task index:", index)
                     endEditing()
                 } else {
-                    print("Starting editing + . Active task index:", index)
-                    if taskManager.isEditing {
-                        taskManager.endEditing()  // End the current editing session
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            startEditing()  // Start editing this task after a brief delay
-                        }
-                        return
-                    }
-                    startEditing()
+                    startEditingGenral()
                 }
             }
         }
+    }
+    
+    private func startEditingGenral() {
+        if taskManager.isEditing {
+            taskManager.endEditing()  // End the current editing session
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                startEditing()
+            }
+            return
+        }
+        startEditing()
+        print("Starting editing. Active task index:", index)
     }
     
     private func startEditing() {
