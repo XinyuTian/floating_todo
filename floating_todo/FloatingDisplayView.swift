@@ -93,6 +93,9 @@ struct TaskItemView: View {
                 } else {
                     startEditingGenral()
                 }
+            } else if keyPressed == "enter+command" {
+                endEditing()
+                taskManager.addTask()
             }
         }
     }
@@ -106,7 +109,6 @@ struct TaskItemView: View {
             return
         }
         startEditing()
-        print("Starting editing. Active task index:", index)
     }
     
     private func startEditing() {

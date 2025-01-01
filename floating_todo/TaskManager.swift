@@ -20,6 +20,7 @@ class TaskManager: ObservableObject {
             return
         }
         tasks.append(Task(text: ""))
+        activeTaskIndex = tasks.count - 1
         updateWindowHeight()
     }
     func startEditing(at index: Int) {
@@ -53,7 +54,11 @@ class TaskManager: ObservableObject {
                 self.moveFocus(up: false)
                 return nil // Prevent further propagation
             case 36:
-                self.keyPressed = "enter"
+                if event.modifierFlags.contains(.command) {
+                    self.keyPressed = "enter+command"
+                } else {
+                    self.keyPressed = "enter"
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     self.keyPressed = ""
                 }
