@@ -87,15 +87,18 @@ struct TaskItemView: View {
             isEditing = false
         }
         .onChange(of: keyPressed) {
-            if keyPressed == "enter" {
+            switch keyPressed {
+            case "enter":
                 if isEditing {
                     endEditing()
                 } else {
                     startEditingGenral()
                 }
-            } else if keyPressed == "enter+command" {
+            case "enter+command":
                 endEditing()
                 taskManager.addTask()
+            default:
+                break
             }
         }
     }
