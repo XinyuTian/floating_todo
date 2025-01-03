@@ -4,7 +4,7 @@ import AppKit
 struct FloatingDisplayView: View {
     @EnvironmentObject var taskManager: TaskManager
     @State private var hovering = false
-    @State private var keyPressed = ""
+    @State var keyPressed: KeyCombination?
 
     var body: some View {
         LazyVStack(spacing: 0) {
@@ -15,7 +15,7 @@ struct FloatingDisplayView: View {
                         set: { taskManager.tasks[index].text = $0 }
                     ),
                     index: index,
-                    keyPressed: taskManager.activeTaskIndex == index ? taskManager.keyPressed : ""
+                    keyPressed: taskManager.activeTaskIndex == index ? taskManager.keyPressed : nil
                 )
             }
         }
@@ -53,8 +53,8 @@ struct TaskItemView: View {
     @FocusState private var isFocused: Bool
     @State private var isEditing: Bool = false
     let index: Int
-    let keyPressed: String
-    
+    let keyPressed: KeyCombination?
+
     var body: some View {
         ZStack {
             // Text display
@@ -88,13 +88,13 @@ struct TaskItemView: View {
         }
         .onChange(of: keyPressed) {
             switch keyPressed {
-            case "enter":
+            case .enter:
                 if isEditing {
                     endEditing()
                 } else {
                     startEditingGenral()
                 }
-            case "enter+command":
+            case .enterCommand:
                 endEditing()
                 taskManager.addTask()
             default:

@@ -8,7 +8,7 @@ class TaskManager: ObservableObject {
     @Published var isEditing: Bool = false
     @Published var editingIndex: Int? = nil
     @Published var activeTaskIndex: Int? = nil
-    @Published var keyPressed: String = ""
+    @Published var keyPressed: KeyCombination? = nil
     
     private init() {
         createFloatingWindow()
@@ -45,7 +45,7 @@ class TaskManager: ObservableObject {
     }
     
     private func setupKeyMonitoring() {
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { (event: NSEvent) -> NSEvent? in
             switch event.keyCode {
             case 126: // Up Arrow
                 self.moveFocus(up: true)
@@ -55,12 +55,12 @@ class TaskManager: ObservableObject {
                 return nil // Prevent further propagation
             case 36:
                 if event.modifierFlags.contains(.command) {
-                    self.keyPressed = "enter+command"
+                    self.keyPressed = KeyCombination.enterCommand
                 } else {
-                    self.keyPressed = "enter"
+                    self.keyPressed = KeyCombination.enter
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.keyPressed = ""
+                    self.keyPressed = nil
                 }
                 return nil
             default:
