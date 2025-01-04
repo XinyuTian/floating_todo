@@ -10,15 +10,15 @@ A lightweight, always-on-top todo list application for macOS that helps you keep
 - 🔄 Auto-save functionality
 - 💫 Smooth editing transitions
 
-## Keyboard Shortcuts (not yet implemented)
+## Keyboard Shortcuts
 
 | Action | Shortcut |
 |--------|----------|
-| Add new task | `Cmd + N` |
+| Add new task | `Cmd + Return/Enter` |
 | Start editing | `Enter` |
 | End editing | `Enter` |
 | Double-click | Start editing task |
-| Single-click | Select task |
+| Single-click | Select task (not yet implemented) |
 
 ## Installation
 
